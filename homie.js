@@ -307,4 +307,4 @@ client.on('message', async (message) => {
 
 })
 
-client.login("ODI0OTc2NzUxNDMxNTE2MTcz.YF3NeA.zCdDsXGFPxrJcQqCijRABZsLzBY")
+client.login("TOKEN")
