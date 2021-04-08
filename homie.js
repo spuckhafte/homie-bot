@@ -156,7 +156,7 @@ client.on('message', async (message) => {
     }
 
     //bad words
-    if (message.channel.id == "816736709004754984" || message.channel.id == "823056732589654026" || message.channel.id == "825080879159836703" || message.content == "Chutia" || message.content == "chutia" || message.content == " Chutia " || message.content == " chutia " || message.content == "chutia " || message.content == "Chutia " || message.content == " chutia" || message.content == " Chutia") {
+    if (message.channel.id == "816736709004754984" || message.channel.id == "823056732589654026" || message.channel.id == "825080879159836703") {
         return
     }
     else {
@@ -303,6 +303,30 @@ client.on('message', async (message) => {
         if (fetched && fetched.first()) {
             pollReactions(fetched.first())
         }
+    }
+    
+    //h#rtsk
+    if (message.content.startsWith("h#rtsk")) {
+        let timedArray = message.content.split(' ')
+        let task = timedArray[1]
+        let time = timedArray[2]
+        
+        const taskEmbed = new Discord.MessageEmbed()
+            .setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true}))
+            .setColor('RANDOM')
+            .setTitle(task)
+            .setDescription(`I will remind you after ${time}`)
+            .setTimestamp()
+        message.channel.send(taskEmbed)
+
+        setTimeout(function(){
+            message.channel.send(`${message.author}, **TIME FOR YOUR TASK: ${task}**`)
+        }, ms(time))
+    }
+
+    //trial commnd
+    if(message.content.startsWith('h#try')){
+        message.channel.send("WORKING")
     }
 
 })
