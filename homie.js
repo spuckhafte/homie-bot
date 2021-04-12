@@ -468,4 +468,4 @@ client.on("message", async (message) => {
   }
 });
 
-client.login("ODI0OTc2NzUxNDMxNTE2MTcz.YF3NeA.jlcvfch1g2rTiACumPYKlK9HQds");
+client.login(TOKEN);
