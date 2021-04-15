@@ -444,23 +444,28 @@ client.on("message", async (message) => {
     let timedArray = message.content.split(" ");
     let task = timedArray[1];
     let time = timedArray[2];
+    
+    if(timedArray.length == 3){
+      const taskEmbed = new Discord.MessageEmbed()
+        .setAuthor(
+          message.author.username,
+          message.author.displayAvatarURL({ dynamic: true })
+        )
+        .setColor("RANDOM")
+        .setTitle(task)
+        .setDescription(`I will remind you after ${time}`)
+        .setTimestamp();
+      message.channel.send(taskEmbed);
 
-    const taskEmbed = new Discord.MessageEmbed()
-      .setAuthor(
-        message.author.username,
-        message.author.displayAvatarURL({ dynamic: true })
-      )
-      .setColor("RANDOM")
-      .setTitle(task)
-      .setDescription(`I will remind you after ${time}`)
-      .setTimestamp();
-    message.channel.send(taskEmbed);
-
-    setTimeout(function () {
-      message.channel.send(
-        `${message.author}, **TIME FOR YOUR TASK: ${task}**`
-      );
-    }, ms(time));
+      setTimeout(function () {
+        message.channel.send(
+          `${message.author}, **TIME FOR YOUR TASK: ${task}**`
+        );
+      }, ms(time));
+    }
+    else{
+      message.channel.send(`${message.author}, I think you missed **_** in your task. Eg. **'a_task' or 'task'**`)
+    }
   }
 
   if (message.content.startsWith("h#try")) {
