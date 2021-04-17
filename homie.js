@@ -429,7 +429,7 @@ client.on("message", async(message) => {
     if (message.content.startsWith('h#ping')) {
         message.channel.send('*Calculating...*').then((pingCalc) => {
             const ping = pingCalc.createdTimestamp - message.createdTimestamp
-            message.reply(`Ping: ${ping}ms`)
+            pingCalc.edit(`${message.author}, Bot Latency: ${ping}ms`)
         })
     }
 
