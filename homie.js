@@ -404,22 +404,33 @@ client.on("message", async(message) => {
     if (message.content.startsWith('h#spam')) {
 
         let spamMessageArr = message.content.split(' ')
-
-        let data = spamMessageArr.splice(0, 2)
-        let spamMessageData = spamMessageArr
-        let spamMessage = spamMessageData.join(' ')
-
-        data.splice(0, 1)
-        let spamCount = data
-
-        if (spamCount <= 5) {
-            message.delete()
-            for (let i = 0; i < spamCount; i++) {
-                message.channel.send(spamMessage)
-            }
+        if (spamMessageArr.length < 3) {
+            message.reply('you missed something !')
         } else {
-            message.channel.send(`${message.author}, you can spam atmost 5 times !`)
+            let data = spamMessageArr.splice(0, 2)
+            let spamMessageData = spamMessageArr
+            let spamMessage = spamMessageData.join(' ')
+
+            data.splice(0, 1)
+            let spamCount = data
+
+            if (spamCount <= 5) {
+                message.delete()
+                for (let i = 0; i < spamCount; i++) {
+                    message.channel.send(spamMessage)
+                }
+            } else {
+                message.channel.send(`${message.author}, you can spam atmost 5 times !`)
+            }
         }
+    }
+
+    //ping
+    if (message.content.startsWith('h#ping')) {
+        message.channel.send('*Calculating...*').then((pingCalc) => {
+            const ping = pingCalc.createdTimestamp - message.createdTimestamp
+            message.reply(`Ping: ${ping}ms`)
+        })
     }
 
     //try
