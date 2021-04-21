@@ -3,7 +3,8 @@ const client = new Discord.Client();
 const fetch = require("node-fetch");
 const ms = require("ms");
 const api = require("imageapi.js");
-const { set } = require("mongoose");
+const db = require('db')
+
 
 const gaali = [
     "madarchod", "bhenchod", "bhosdika", "fuck off", "chutia", "ullu ki jhaat", "chutiye ka pattha", "haramzyada", "bc", "mc",
@@ -43,6 +44,8 @@ client.on("ready", async() => {
         memeChannel.send(memee);
     }, 900000);
 });
+
+
 
 client.on("message", async(message) => {
     //h#g
@@ -142,6 +145,18 @@ client.on("message", async(message) => {
                 }, {
                     name: "h#spam spam_count(eg.10) spam_message(any message)",
                     value: "Spams **'any message'** **'10'** times!"
+                }, {
+                    name: "h#warn @someone Reason",
+                    value: "Warns @someone for a specific 'Reason'"
+                }, {
+                    name: "h#nick @someone NickName",
+                    value: "Changes the nickname of @someone to 'NickName' !"
+                }, {
+                    name: "h#selfnick NickName",
+                    value: "Changes the nickname of the author to 'NickName' !"
+                }, {
+                    name: "h#cal num(operation)num",
+                    value: "Performs operations on number (add,sub,pro,div,remainder, toThePower)' !"
                 }
             )
             .setImage(
@@ -220,7 +235,7 @@ client.on("message", async(message) => {
     } else {
         let foundInText = false;
         for (var i in gaali) {
-            if (message.content.toLowerCase().includes(gaali[i].toLowerCase()))
+            if (message.content.toLowerCase().includes(gaali[i]))
                 foundInText = true;
         }
         if (foundInText) {
@@ -425,18 +440,150 @@ client.on("message", async(message) => {
         }
     }
 
+    //h#warn
+    if (message.content.startsWith('h#warn ')) {
+        let warn = message.content.split(' ')
+        warn.splice(0, 2)
+
+        let warnReason = warn.join(' ')
+        let warnAuthor = message.author
+        let warnTarget = message.mentions.users.first()
+
+        message.delete()
+
+        if (warnReason == null || warnReason == "" || warnReason == " " || warnReason == "** **" || warnReason == "* *" || warnReason == "|| ||") {
+            message.reply('Please provide a valid reason !')
+        } else {
+            message.channel.send(`${warnTarget}, you have been **WARNED** by ${warnAuthor} \n\nReason: **${warnReason}**`)
+        }
+    }
+
+    //h#nick
+    if (message.content.startsWith('h#nick ')) {
+        let prevname = message.content.split(' ').splice(0, 2).join()
+        let messageArr = message.content.split(' ')
+        if (messageArr.length > 2) {
+            messageArr.splice(0, 2)
+            let nick = messageArr.join(' ')
+            let target = message.mentions.users.first()
+            let member = message.guild.members.cache.get(target.id)
+
+            if (message.member.guild.me.hasPermission('MANAGE_NICKNAMES')) {
+                if (target == message.author) {
+                    const embedNick = new Discord.MessageEmbed()
+                        .setDescription('❗ Use ***h#selfnick*** instead !')
+                        .setColor('RANDOM')
+                    message.reply(embedNick)
+                } else {
+
+                    if (nick.split('').length > 32) {
+                        message.reply('Length of the nickname must be shorter than or equal to 32')
+                    } else {
+                        member.setNickname(nick)
+                        const embedNick = new Discord.MessageEmbed()
+                            .setDescription(`*${target.username}*` + "'s nickname changed, " + `*${prevname}*` + " -> " + `***${nick}***`)
+                            .setColor('RANDOM')
+                        message.channel.send(embedNick)
+                    }
+
+                }
+
+            } else {
+                const embedNick = new Discord.MessageEmbed()
+                    .setDescription('❌ You dont have the required permissions')
+                    .setColor('RANDOM')
+                message.channel.send(embedNick)
+            }
+        } else {
+            const embedNick = new Discord.MessageEmbed()
+                .setDescription('❌ Your command is wrong')
+                .setColor('RANDOM')
+            message.channel.send(embedNick)
+        }
+    }
+
+    //h#selfnick
+    if (message.content.startsWith('h#selfnick ')) {
+        let messageArr = message.content.split(' ')
+        if (messageArr.length > 1) {
+            if (message.member.guild.me.hasPermission('CHANGE_NICKNAME')) {
+                messageArr.shift()
+                let selfnick = messageArr.join(' ')
+                let target = message.author
+                let member = message.guild.members.cache.get(target.id)
+                if (selfnick.split('').length > 32) {
+                    message.reply('Length of the nickname must be shorter than or equal to 32')
+                } else {
+                    member.setNickname(selfnick)
+                    const embedNick = new Discord.MessageEmbed()
+                        .setDescription(`*${target.username}*` + "'s nickname changed to -> " + `**${selfnick}**`)
+                        .setColor('RANDOM')
+                    message.channel.send(embedNick)
+                }
+            }
+        } else {
+            const embedNick = new Discord.MessageEmbed()
+                .setDescription('❌ Your command is wrong')
+                .setColor('RANDOM')
+            message.channel.send(embedNick)
+        }
+    }
+
+    //h#cal
+    if (message.content.startsWith('h#cal ')) {
+        let messageArr = message.content.split(' ')
+        messageArr.shift()
+        if (message.content.split(' ').length == 2) {
+            let remove = parseInt(messageArr.join()).toString().split('').length
+            let data = messageArr.join().split('')
+            data.splice(0, remove)
+
+            let operator = data.splice(0, 1).join()
+            let number1 = parseInt(messageArr.join())
+            let number2 = parseInt(data.join(''))
+
+            if (number1 !== "" || number2 !== "" || number1 !== NaN || number2 !== NaN || number1 !== " " || number2 !== " ") {
+                let operations = {
+                    '+': number1 + number2,
+                    '-': number1 - number2,
+                    '*': number1 * number2,
+                    '/': number1 / number2,
+                    '%': number1 % number2,
+                    '^': Math.pow(number1, number2)
+                }
+                let answer = operations[operator]
+
+                const embedCal = new Discord.MessageEmbed()
+                    .setDescription(`${number1} ${operator} ${number2} = ${answer}`)
+                    .setColor('RANDOM')
+                message.channel.send(embedCal)
+            } else {
+                const embedCal = new Discord.MessageEmbed()
+                    .setDescription('❌ Values undefined !')
+                    .setColor('RANDOM')
+                message.channel.send(embedCal)
+            }
+        } else {
+            const embedCal = new Discord.MessageEmbed()
+                .setDescription('❌ Use the command properly, example, **a+b** not **a + b** !')
+                .setColor('RANDOM')
+            message.channel.send(embedCal)
+        }
+    }
+
     //ping
     if (message.content.startsWith('h#ping')) {
         message.channel.send('*Calculating...*').then((pingCalc) => {
             const ping = pingCalc.createdTimestamp - message.createdTimestamp
-            pingCalc.edit(`${message.author}, Bot Latency: ${ping}ms`)
+            pingCalc.edit(`${message.author}, Meri Aukaat: ${ping}ms`)
         })
     }
 
     //try
     if (message.content.startsWith("h#try")) {
-        message.channel.send("```bot is online```")
+        message.channel.send("```bot is offline```")
     }
+
 })
 
-client.login(TOKEN);
+client.login("ODI0OTc2NzUxNDMxNTE2MTcz.YF3NeA.fYC_LMmTXjIVM_NKpnT_8TOhGPs");
