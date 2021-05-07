@@ -6,7 +6,12 @@ const api = require("imageapi.js");
 const request = require('request')
 
 
-const gaali = [slangs]
+const gaali = [
+    "madarchod", "bhenchod", "bhosdika", "fuck off", "chutia", "ullu ki jhaat", "chutiye ka pattha", "haramzyada", "bc", "mc",
+    "haram ka pilla", "jhaatu", "kamine ka pattha", "kutte ka goo", "fuck", "gaandu", "gandu", "lavde", "randi", "gaand", "lavda", "rande",
+    "chod", "lawde", "gandu", "mc", "bc", "bisi", "jhatu", "madarchod", "randi", "randwe", "loda", "bhen ka", "lode", "chutiye", "lund", "bsdk",
+    "bhnchd", "bsdk", "m a d a r c h o d", "b h e n ch od", "Bhosdiwalo", "Fck", "B c", "M c", "B.   C", "B. C", "M.   C", "B.   C", "Madarchid", "F u c k", "chuda", "bhen", "madar", "fcuk", "Fkuck", "Beesee", "B‎C", "B.  C.", "bhsdk", "Bc", "bc", "Mc", "mc"
+]
 
 const pollReactions = (message) => {
     message.react("👍");
@@ -19,7 +24,7 @@ const pollReactions = (message) => {
 client.on("ready", async() => {
     console.log("Connected as " + client.user.tag);
 
-    client.user.setActivity("the мσση", { type: "WATCHING" });
+    client.user.setActivity("the мσση for 'h#help (caseSensitive)'", { type: "WATCHING" });
 
     client.guilds.cache.forEach((guild) => {
         console.log(guild.name);
@@ -237,7 +242,7 @@ client.on("message", async(message) => {
                 name: '** **',
                 value: '** **'
             }, {
-                name: "`h#meme I`",
+                name: "`h#meme i`",
                 value: "Delivers you a sort of indian meme from 'r/indianmemer'",
             }, {
                 name: '** **',
@@ -705,6 +710,23 @@ client.on("message", async(message) => {
         }
     }
 
+    if (message.content.startsWith('h#avatar')) {
+        if (message.content.split(' ').length == 2) {
+            if (message.mentions.users.first()) {
+                let user = message.mentions.users.first()
+
+            } else {
+                //unmention exception
+            }
+        }
+        if (message.content.split(' ').length == 1) {
+            //code for displaying avatar of the authoe
+        }
+        if (message.content.split(' ').length !== 1 && message.content.split(' ').length !== 2) {
+            //wrong commmand
+        }
+    }
+
     if (message.content.startsWith('h#cal ')) {
         let messageArr = message.content.split(' ')
         messageArr.shift()
@@ -798,7 +820,8 @@ client.on("message", async(message) => {
         }
     }
 
-    if (message.content.startsWith("h#s")) {
+    if (message.content.startsWith("h#s ")) {
+        console.log(message.content.split(' '))
         if (message.content.split(' ').length < 3) {
             const embedSend = new Discord.MessageEmbed()
                 .setDescription('❌ Your command is wrong')
@@ -908,35 +931,31 @@ client.on("message", async(message) => {
                     .setImage(
                         "https://i.imgur.com/wSTFkRMhttps://cdn.discordapp.com/attachments/774279357576511509/825041729353678878/Screenshot_2021-03-26_at_3.40.56_PM.png.png"
                     );
-                const embedQuizEdit = new Discord.MessageEmbed()
-                    .setDescription(`❗ *${message.author.username}*, ***Times Up***!`)
-                    .setColor('RANDOM')
+                message.channel.send(quizCommand).then(async(quiz) => {
+                    const filter = (m) => m.author.id === message.author.id;
+                    const answer = await message.channel.awaitMessages(filter, {
+                        max: 1,
+                        time: 60000,
+                        errors: ["time", "max"],
+                    });
+                    const ans = answer.first();
 
-                message.channel.send(quizCommand).then((quiz) => {
-                    setTimeout(function() {
+                    if (ans.content.toLowerCase() === correctAnswer.toLowerCase()) {
+                        const embedQuiz = new Discord.MessageEmbed()
+                            .setDescription(`✅ *${message.author.username}*, that's **Correct**`)
+                            .setColor('RANDOM')
+                        quiz.edit(embedQuiz)
+                    } else {
+                        const embedQuiz = new Discord.MessageEmbed()
+                            .setDescription(`❌ *${message.author.username}*, that's **Incorrect** !`)
+                            .setColor('RANDOM')
+                        quiz.edit(embedQuiz)
+                    }
+
+                    setTimeout(() => {
                         quiz.edit(embedQuizEdit)
                     }, 60000)
                 })
-
-                const filter = (m) => m.author.id === message.author.id;
-                const answer = await message.channel.awaitMessages(filter, {
-                    max: 1,
-                    time: 60000,
-                    errors: ["time", "max"],
-                });
-                const ans = answer.first();
-
-                if (ans.content.toLowerCase() === correctAnswer.toLowerCase()) {
-                    const embedQuiz = new Discord.MessageEmbed()
-                        .setDescription(`✅ *${message.author.username}*, that's **Correct** !`)
-                        .setColor('RANDOM')
-                    message.channel.send(embedQuiz)
-                } else {
-                    const embedQuiz = new Discord.MessageEmbed()
-                        .setDescription(`❌ *${message.author.username}*, that's **Incorrect** !`)
-                        .setColor('RANDOM')
-                    message.channel.send(embedQuiz)
-                }
             }
         } else if (message.content.split(' ').length == 1) {
             {
@@ -964,34 +983,35 @@ client.on("message", async(message) => {
                         "https://i.imgur.com/wSTFkRMhttps://cdn.discordapp.com/attachments/774279357576511509/825041729353678878/Screenshot_2021-03-26_at_3.40.56_PM.png.png"
                     );
                 const embedQuizEdit = new Discord.MessageEmbed()
-                    .setDescription(`❗ *${message.author.username}*, ***Times Up***!`)
+                    .setDescription(`**Question TimeOut!**`)
                     .setColor('RANDOM')
 
-                message.channel.send(quizCommand).then((quiz) => {
-                    setTimeout(function() {
+                message.channel.send(quizCommand).then(async(quiz) => {
+                    const filter = (m) => m.author.id === message.author.id;
+                    const answer = await message.channel.awaitMessages(filter, {
+                        max: 1,
+                        time: 60000,
+                        errors: ["time", "max"],
+                    });
+                    const ans = answer.first();
+
+                    if (ans.content.toLowerCase() === correctAnswer.toLowerCase()) {
+                        const embedQuiz = new Discord.MessageEmbed()
+                            .setDescription(`✅ *${message.author.username}*, that's **Correct**`)
+                            .setColor('RANDOM')
+                        quiz.edit(embedQuiz)
+                    } else {
+                        const embedQuiz = new Discord.MessageEmbed()
+                            .setDescription(`❌ *${message.author.username}*, that's **Incorrect** !`)
+                            .setColor('RANDOM')
+                        quiz.edit(embedQuiz)
+                    }
+
+                    setTimeout(() => {
                         quiz.edit(embedQuizEdit)
                     }, 60000)
                 })
 
-                const filter = (m) => m.author.id === message.author.id;
-                const answer = await message.channel.awaitMessages(filter, {
-                    max: 1,
-                    time: 60000,
-                    errors: ["time", "max"],
-                });
-                const ans = answer.first();
-
-                if (ans.content.toLowerCase() === correctAnswer.toLowerCase()) {
-                    const embedQuiz = new Discord.MessageEmbed()
-                        .setDescription(`✅ *${message.author.username}*, that's **Correct** !`)
-                        .setColor('RANDOM')
-                    message.channel.send(embedQuiz)
-                } else {
-                    const embedQuiz = new Discord.MessageEmbed()
-                        .setDescription(`❌ *${message.author.username}*, that's **Incorrect** !`)
-                        .setColor('RANDOM')
-                    message.channel.send(embedQuiz)
-                }
             }
         } else {
             const embedQuiz = new Discord.MessageEmbed()
@@ -1002,7 +1022,7 @@ client.on("message", async(message) => {
     }
 
     if (message.content.startsWith("h#meme")) {
-        if (message.content.endsWith(" I")) {
+        if (message.content.endsWith(" i")) {
             let subreddit = "indianmemer";
             let img = await api(subreddit);
             const meme = new Discord.MessageEmbed()
