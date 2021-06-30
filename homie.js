@@ -6,12 +6,7 @@ const api = require("imageapi.js");
 const request = require('request')
 
 
-const gaali = [
-    "madarchod", "bhenchod", "bhosdika", "fuck off", "chutia", "ullu ki jhaat", "chutiye ka pattha", "haramzyada", "bc", "mc",
-    "haram ka pilla", "jhaatu", "kamine ka pattha", "kutte ka goo", "fuck", "gaandu", "gandu", "lavde", "randi", "gaand", "lavda", "rande",
-    "chod", "lawde", "gandu", "mc", "bc", "bisi", "jhatu", "madarchod", "randi", "randwe", "loda", "bhen ka", "lode", "chutiye", "lund", "bsdk",
-    "bhnchd", "bsdk", "m a d a r c h o d", "b h e n ch od", "Bhosdiwalo", "Fck", "B c", "M c", "B.   C", "B. C", "M.   C", "B.   C", "Madarchid", "F u c k", "chuda", "bhen", "madar", "fcuk", "Fkuck", "Beesee", "B‎C", "B.  C.", "bhsdk", "Bc", "bc", "Mc", "mc"
-]
+const gaali = [// slangs go here]
 
 const pollReactions = (message) => {
     message.react("👍");
