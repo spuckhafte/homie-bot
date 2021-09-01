@@ -5,4 +5,4 @@ Feature rich bot:
 3. Utilities
 4. Slangs<br>
 <br>
-*and much more*
+*and much more
