@@ -4,4 +4,5 @@ Feature rich bot:
 2. Memes
 3. Utilities
 4. Slangs<br>
+<br>
 *and much more*
